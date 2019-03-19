@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>FlankOA</title>
+		<link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+		<script src="layui-v2.4.5/layui.js"  th:src="@{/layui-v2.4.5/layui.js}"></script>
+		<script type="text/javascript" src="login/js/jquery-2.1.1.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+		<!--导入阿里图标库-->
+		<link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css" />
+	</head>
+
+	<body class="layui-layout-body">
+	
+		<div class="layui-layout layui-layout-admin">
+			<!--引入top-->
+			<div th:replace="~{/commons/bar::top}"></div>
+			<!--引入slide-->
+			<div th:replace="~{/commons/bar::slide}"></div>
+			<!--content-->
+			<div class="layui-body">
+				<!-- 内容主体区域 -->
+				<div style="padding: 15px;">
+
+				</div>
+
+
+			</div>
+			</div>
+
+			<div class="layui-footer">
+				<!-- 底部固定区域 -->
+				© layui.com - 底部固定区域
+			</div>
+		</div>
+	</body>
+<script>
+			//JavaScript代码区域
+			layui.use('element', function() {
+				var element = layui.element;
+			});
+
+			//颜色编辑模块
+			layui.use('colorpicker', function () {
+				var $ = layui.$ , colorpicker = layui.colorpicker;
+				//开启全功能
+				colorpicker.render({
+					elem: '#test-all'
+					,color: 'rgba(57, 61, 73, 1)'
+					,size: 'xs'
+					,format: 'rgb'
+					,predefine: true
+					,alpha: true
+					,change: function(color){
+						//给当前页面头部和左侧设置主题色
+						$('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+					}
+				});
+
+			});
+		</script>
+
+</html>

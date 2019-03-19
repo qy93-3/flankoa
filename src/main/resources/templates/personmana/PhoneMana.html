@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css" />
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+
+</head>
+
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--引入top-->
+    <div th:replace="~{/commons/bar::top}"></div>
+    <!--引入slide-->
+    <div th:replace="~{/commons/bar::slide}"></div>
+    <!--content-->
+    <div class="layui-body">
+        <div class="layui-row layui-col-space5  ">
+            <!--左边-->
+            <div class="layui-col-md3">
+                <fieldset class="layui-elem-field layui-field-title" style="padding-top: 4%">
+                    <legend>新建联系人</legend>
+                    <div class="layui-field-box">
+                        <div class="layui-row">
+                            <button class="layui-btn layui-btn-fluid layui-icon layui-icon-edit ">新建</button>
+                        </div>
+                        <br>
+                        <div class="layui-row" style="font-size: 1.1em;" >
+                            <ul >
+                                <li><a href="" style="padding-left: 50px" class="inner" ><span class="layui-icon layui-icon-friends"></span>&nbsp;&nbsp;内部通讯录&nbsp;&nbsp;<span class="layui-badge">6</span></a></li>
+                                <hr>
+                                <li ><a href="" style="padding-left: 50px" class="outter" ><span class="layui-icon layui-icon-friends"></span>&nbsp;&nbsp;外部通讯录</a></li>
+                                <hr>
+                                <hr>
+                            </ul>
+                            </div>
+                    </div>
+                </fieldset>
+            </div>
+            <!--右边-->
+            <div class="layui-col-md9" style="margin-top: 1%">
+                <!--数据显示-->
+                <table id="demo" lay-filter="test"></table>
+                <!--工具条-->
+                <script type="text/html" id="toolBar">
+                    <span>
+                    <button class="layui-btn  layui-btn-sm layui-btn-danger layui-icon layui-icon-delete"
+                            lay-event="delete"> 删除  </button>
+                    <button class="layui-btn  layui-btn-sm  layui-icon layui-icon-refresh"
+                            lay-event="refresh"> 刷新 </button>
+                </span>
+                </script>
+                <!--行内工具条-->
+                <script type="text/html" id="barDemo">
+                    <a class="layui-btn layui-btn-normal layui-btn-xs layui-icon layui-icon-search" lay-event="search">查看</a>
+                </script>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+<script th:inline="none">
+
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    //渲染获取到的数据
+    //使用table 模块
+    layui.use(['table','jquery'], function () {
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+
+        table.render({
+            elem: '#demo'
+            , id: 'messageTable'
+            , height: 500
+            , url: '/email/phonePage' //数据接口
+            , page: true //开启分页
+            , cellMinWidth: 80
+            , toolbar: '#toolBar'
+            , limit: 8
+            , limits: [8, 10, 15]
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'id', title: 'ID', sort: true, fixed: 'left'}
+                , {field: 'name', title: '姓名'}
+                , {field: 'sex', title: '性别', templet: '#sexTpl'}
+                , {field: 'tel', title: '电话'}
+                , {field: 'company', title: '公司/部门',}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo'}
+            ]],
+            // 数据渲染完的回调 res即为你接口返回的信息。 得到当前页码 得到数据总量
+            done: function(res, curr, count){
+            }
+        });
+        //  渲染完后刷新一次表单，如果不刷新，排版会乱
+        layui.table.reload('messageTable', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        layer.confirm('真的删除' + data.length + '行么', function (index) {
+                            var ids = "";
+                            if (data.length > 0) {
+                                for (var i = 0; i < data.length; i++) {
+                                    ids += checkStatus.data[i].id + "-";
+                                }
+                            }
+                            $.ajax({
+                                url: "/email/deletePhone",
+                                type: "get",
+                                data: "ids=" + ids,
+                                // contentType: "application/json;charset=UTF-8", // 发送数据的格式
+                                success: function (result) {
+                                    if (result.code == 200) {
+                                        layer.msg("删除成功", {icon: 6});
+                                        table.reload('messageTable', {
+                                            page: {
+                                                curr: 1 //重新从第 1 页开始
+                                            }
+                                        });
+                                    } else {
+                                        layer.msg("删除不成功", {icon: 5})
+                                    }
+                                }
+                            });
+                            layer.close(index);
+                        });
+
+                    }
+                    break;
+                case 'refresh':
+                    table.reload('messageTable', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+                    break;
+            }
+            ;
+        });
+
+        //左边连接(收件箱，发件箱，草稿箱，垃圾箱)点击事件
+        $(document).on("click",".inner",function(){
+            table.reload('messageTable', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,where:{
+                    type:'内部通讯录'
+                }
+            });
+            return false;
+        })
+        $(document).on("click",".outter",function(){
+            table.reload('messageTable', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,where:{
+                    type:'外部通讯录'
+                }
+            });
+            return false;
+        })
+    });
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$ , colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            ,color: 'rgba(57, 61, 73, 1)'
+            ,size: 'xs'
+            ,format: 'rgb'
+            ,predefine: true
+            ,alpha: true
+            ,change: function(color){
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+
+</script>
+<!--自定义模板-->
+<script type="text/html" id="sexTpl">
+    {{#  if(d.sex ==='男'){ }}
+    <span class="layui-icon layui-icon-male" style="color: #01AAED"></span>
+    {{#  }else{ }}
+    <span class="layui-icon layui-icon-female" style="color: #FF5722"></span>
+    {{#  } }}
+</script>
+</html>

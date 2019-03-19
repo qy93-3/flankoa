@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flank.mapper.UserMapper">
+
+    <!-- 开启二级缓存 -->
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.flank.beans.User">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="sex" property="sex" />
+        <result column="birth" property="birth" />
+        <result column="join_time" property="joinTime" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="dept_id" property="deptId" />
+        <result column="real_name" property="realName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, user_name, password, sex, birth, join_time, phone, email, dept_id, real_name
+    </sql>
+
+</mapper>

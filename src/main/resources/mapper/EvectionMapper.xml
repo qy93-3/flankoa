@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flank.mapper.EvectionMapper">
+
+    <!-- 开启二级缓存 -->
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.flank.beans.Evection">
+        <id column="evection_id" property="evectionId" />
+        <result column="title" property="title" />
+        <result column="start_time" property="startTime" />
+        <result column="file_path" property="filePath" />
+        <result column="evection_cause" property="evectionCause" />
+        <result column="urgency_id" property="urgencyId" />
+        <result column="type_id" property="typeId" />
+        <result column="status_id" property="statusId" />
+        <result column="submit_tiem" property="submitTiem" />
+        <result column="evection_user" property="evectionUser" />
+        <result column="look_user_id" property="lookUserId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        evection_id, title, start_time, file_path, evection_cause, urgency_id, type_id, status_id, submit_tiem, evection_user, look_user_id
+    </sql>
+
+</mapper>

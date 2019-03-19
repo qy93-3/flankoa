@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css" />
+</head>
+
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--引入top-->
+    <div th:replace="~{/commons/bar::top}"></div>
+    <!--引入slide-->
+    <div th:replace="~{/commons/bar::slide}"></div>
+    <!--content-->
+    <div class="layui-body">
+        <div style="margin-left: 4%;margin-top: 2%">
+            <!--工具条-->
+            <script type="text/html" id="toolBar">
+                <!--增删改-->
+                <span>
+                     <button class="layui-btn  layui-btn-sm layui-icon layui-icon-add-1" lay-event="add">增加</button>
+                     <button class="layui-btn  layui-btn-sm layui-icon layui-icon-edit" lay-event="update">编辑</button>
+                    <button class="layui-btn  layui-btn-sm layui-btn-danger layui-icon layui-icon-delete"
+                            lay-event="delete">删除   </button>
+                    <button class="layui-btn  layui-btn-sm  layui-icon layui-icon-refresh"
+                            lay-event="refresh"> 刷新 </button>
+
+                </span>
+            </script>
+
+            <!--数据显示-->
+            <table id="demo" lay-filter="test"></table>
+        </div>
+
+    </div>
+</div>
+</body>
+<script th:inline="none">
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    //渲染获取到的数据
+    //使用table 模块
+    layui.use('table', function () {
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+        //渲染表格
+        table.render({
+            elem: '#demo'
+            , id: 'messageTable'
+            , height: 500
+            , url: '/message/page' //数据接口
+            , page: true //开启分页
+            , cellMinWidth: 80
+            , toolbar: '#toolBar'
+            , limit: 8
+            , limits: [8, 10, 15]
+            , cols: [[ //表头
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'id', title: 'ID', sort: true, fixed: 'left'}
+                , {field: 'content', title: '内容'}
+                , {field: 'createTime', title: '创建时间', sort: true}
+                // ,{field: 'urgencyId', title: '紧急程度id'},
+                // ,{field: 'authorId', title: '作者id' }
+                , {field: 'userName', title: '作者名', templet: '<div>{{d.user.realName}}</div>'}
+                , {field: 'name', title: '紧急程度', templet: '#urgencyTpl'}
+            ]]
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'add':
+                    editMeg("添加公告", {}, "/message/add");
+                    break;
+                case 'update':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        // layer.alert('编辑 [id]：' + checkStatus.data[0].id);
+                        editMeg("编辑公告", data, "/message/edit");
+                    }
+                    break;
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        layer.confirm('真的删除' + data.length + '行么', function (index) {
+                            var ids = "";
+                            if (data.length > 0) {
+                                for (var i = 0; i < data.length; i++) {
+                                    ids += checkStatus.data[i].id + "-";
+                                }
+                            }
+                            $.ajax({
+                                url: "/message/delete",
+                                type: "get",
+                                data: "ids=" + ids,
+                                // contentType: "application/json;charset=UTF-8", // 发送数据的格式
+                                success: function (result) {
+                                    if (result.code == 200) {
+                                        layer.msg("删除成功", {icon: 6});
+                                        table.reload('messageTable', {
+                                            page: {
+                                                curr: 1 //重新从第 1 页开始
+                                            }
+                                        });
+                                    } else {
+                                        layer.msg("删除不成功", {icon: 5})
+                                    }
+                                }
+                            });
+                            layer.close(index);
+                        });
+
+                    }
+                    break;
+                case 'refresh':
+                    table.reload('messageTable', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+                    break;
+            }
+            ;
+        });
+
+    });
+
+
+    //编辑新增二合一  title：弹出框的标题  url：点击确认后要前往的页面，data：从父页面传递过来的数据
+    function editMeg(title, data, url) {
+
+        var index = layui.layer.open({
+            title: title,
+            btn: ['确认', '取消'],//弹出层按钮
+            btnAlign: 'c',
+            closeBtn: 2,
+            type: 2,
+            content: "/message/edit",//弹出层页面
+            area: ['500px', '450px'],
+            success: function (layero, index) {
+                var body = layui.layer.getChildFrame('body', index);
+                if (data) {
+                    body.find(".id").val(data[0].id);
+                    body.find(".authorId").val(data[0].authorId);
+                    body.find(".realName").val(data[0].user.realName);
+                    body.find(".urgencyId").val(data[0].urgencyId);
+                    body.find(".createTime").val(data[0].createTime);
+                    body.find(".content").text(data[0].content);
+                    body.find(".submit").text(url);
+                    form.render();
+                }
+                setTimeout(function () {
+                    layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {tips: 3});
+                }, 500)
+            },
+            yes: function (index, layero) {//点击“确认”按钮后触发的事件
+                var data = {};
+                var body = layer.getChildFrame('body', index);
+                //触发弹出层的验证
+                body.find(".submit").click();
+                //当弹出层验证通过时，会给弹出层的隐藏域赋值1
+                if (body.find(".submit").val() != 1) {
+                    return false;
+                }
+                var form = body.find("#messageEditForm").serializeArray();//获取指定id的表单
+                $.each(form, function () {
+                    data[this.name] = this.value;
+                });
+                data = JSON.stringify(data);
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: data,
+                    success: function (rec) {
+                        if (rec.code == 200) {
+                            layer.msg(rec.msg, {icon: 6});
+                            layui.use('table', function () {
+                                var table = layui.table;
+                                table.reload('messageTable', {
+                                    url: '/message/page' //数据接口，更新成功后刷新数据表格
+                                });
+                            });
+                        } else {
+                            layer.alert(rec.msg, {icon: 5}, function (index) {
+                                layer.close(index);
+                            });
+                        }
+                        layer.close(index);
+                    }
+
+                });
+                return false;//取消按钮的默认行为
+            }
+        });
+    }
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$ , colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            ,color: 'rgba(57, 61, 73, 1)'
+            ,size: 'xs'
+            ,format: 'rgb'
+            ,predefine: true
+            ,alpha: true
+            ,change: function(color){
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+</script>
+<!--自定义模板-->
+<script type="text/html" id="urgencyTpl">
+    {{#  if(d.urgency.name === '正常'){ }}
+    <button class="layui-btn layui-btn-xs layui-btn-primary ">{{d.urgency.name}}</button>
+    {{#  } else if(d.urgency.name === '重要') { }}
+    <button class="layui-btn layui-btn-xs">{{d.urgency.name}}</button>
+    {{#  } else  { }}
+    <button class="layui-btn layui-btn-xs layui-btn-danger">{{d.urgency.name}}</button>
+    {{#  } }}
+</script>
+
+</html>

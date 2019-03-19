@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css" />
+</head>
+
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--引入top-->
+    <div th:replace="~{/commons/bar::top}"></div>
+    <!--引入slide-->
+    <div th:replace="~{/commons/bar::slide}"></div>
+    <!--content-->
+    <div class="layui-body">
+        <div style="margin-left: 4%;margin-top: 2%">
+            <!--工具条-->
+            <script type="text/html" id="toolBar">
+                <span>
+                    <button class="layui-btn  layui-btn-sm  layui-icon layui-icon-refresh"
+                            lay-event="refresh"> 刷新 </button>
+                </span>
+            </script>
+            <!--数据显示-->
+            <table id="demo" lay-filter="test"></table>
+        </div>
+
+    </div>
+</div>
+</body>
+<script th:inline="none">
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    //渲染获取到的数据
+    //使用table 模块
+    layui.use('table', function () {
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+        //渲染表格
+        table.render({
+            elem: '#demo'
+            , id: 'messageTable'
+            , height: 700
+            , url: '/process/myProcess' //数据接口
+            , cellMinWidth: 80
+            , toolbar: '#toolBar'
+            , limit: 8
+            , limits: [8, 10, 15]
+            , cols: [[ //表头
+
+                , {field: 'type', title: '类型',sort: true, fixed: 'left'}
+                , {field: 'title', title: '标题'}
+                , {field: 'time', title: '申请时间', sort: true}
+                , {field: 'name', title: '审核人'}
+                , {field: 'urgency', title: '紧急程度', templet: '#urgencyTpl'}
+                , {field: 'status', title: '状态', templet: '#statusTpl'}
+
+            ]]
+
+        });
+      //  渲染完后刷新一次表单，如果不刷新，排版会乱
+      layui.table.reload('messageTable', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+        });
+        //监听头工具栏事件
+        table.on('toolbar(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'refresh':
+                    table.reload('messageTable', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+                    break;
+            }
+            ;
+        });
+
+    });
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$ , colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            ,color: 'rgba(57, 61, 73, 1)'
+            ,size: 'xs'
+            ,format: 'rgb'
+            ,predefine: true
+            ,alpha: true
+            ,change: function(color){
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+</script>
+<!--自定义模板-->
+<script type="text/html" id="urgencyTpl">
+    {{#  if(d.urgency === '正常'){ }}
+    <button  class="layui-btn layui-btn-xs layui-btn-primary " >{{d.urgency}}</button>
+    {{#  } else if(d.urgency === '重要') { }}
+    <button  class="layui-btn layui-btn-xs">{{d.urgency}}</button>
+    {{#  } else  { }}
+    <button  class="layui-btn layui-btn-xs layui-btn-danger">{{d.urgency}}</button>
+    {{#  } }}
+</script>
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status === '未通过'){ }}
+    <button  class="layui-btn layui-btn-xs layui-btn-danger " >{{d.status}}</button>
+    {{#  } else  { }}
+    <button  class="layui-btn layui-btn-xs layui-btn-primary" >{{d.status}}</button>
+    {{#  }  }}
+</script>
+</html>

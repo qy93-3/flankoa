@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_avxrcrz7t9t.css" />
+</head>
+
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--引入top-->
+    <div th:replace="~{/commons/bar::top}"></div>
+    <!--引入slide-->
+    <div th:replace="~{/commons/bar::slide}"></div>
+    <!--content-->
+    <div class="layui-body">
+        <div class="layui-row">
+            <div class="layui-col-md4">
+                <blockquote class="layui-elem-quote layui-quote-nm" >
+                <a href="javascript:;" th:href="@{/holiday/add}"> <img th:src="@{/images/5.png}" style="width:100px;height: 100px"/>请假申请单</a>
+               </blockquote>
+            </div>
+            <div class="layui-col-md4">
+                <blockquote class="layui-elem-quote layui-quote-nm" >
+                <a href="javascript:;" th:href="@{/evection/add}"> <img th:src="@{/images/2.png}" style="width:100px;height: 100px"/>出差申请单</a>
+               </blockquote>
+            </div>
+            <div class="layui-col-md4">
+                <blockquote class="layui-elem-quote layui-quote-nm" >
+                <a href="javascript:;" onclick="f()"> <img th:src="@{/images/3.png}" style="width:100px;height: 100px"/>加班申请单</a>
+               </blockquote>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md4">
+                <blockquote class="layui-elem-quote layui-quote-nm" >
+                <a href="javascript:;" onclick="f()"> <img th:src="@{/images/4.png}" style="width:100px;height: 100px"/>转正申请单</a>
+               </blockquote>
+            </div>
+
+            <div class="layui-col-md4">
+                <blockquote class="layui-elem-quote layui-quote-nm" >
+                <a href="javascript:;"onclick="f()"> <img th:src="@{/images/1.png}" style="width:100px;height: 100px"/>费用报销单</a>
+               </blockquote>
+            </div>
+            <div class="layui-col-md4">
+                <blockquote class="layui-elem-quote layui-quote-nm" >
+                <a href="javascript:;" onclick="f()"> <img th:src="@{/images/6.png}" style="width:100px;height: 100px"/>离职申请单</a>
+               </blockquote>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="none">
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+
+    });
+    //这个一定要有，表示加载layui的layer弹出层模块，不然你后面使用的layui的弹出层没有效果
+    layui.use('layer', function(){
+    });
+    function f() {
+        layer.msg("你再点我，我就打你哦!",{icon: 5})
+    }
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$ , colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            ,color: 'rgba(57, 61, 73, 1)'
+            ,size: 'xs'
+            ,format: 'rgb'
+            ,predefine: true
+            ,alpha: true
+            ,change: function(color){
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+</script>
+
+</html>

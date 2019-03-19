@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css" />
+</head>
+
+<body >
+
+<form class="layui-form" action="#"  id="messageEditForm" style="width:80%;">
+    <div class="layui-form-item layui-row layui-col-xs12"><label class="layui-form-label">作者</label>
+        <div class="layui-input-block">
+            <!-- 使用隐藏域用于保存编辑项的ID值，便于提交修改 -->
+            <input type="hidden" class="id" name="id">
+            <input type="hidden" class="authorId" name="authorId">
+            <input type="text" class="layui-input realName" required lay-verify="required"  disabled>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">时间</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input createTime" name="createTime" required  lay-verify="required" id="test5" placeholder="yyyy-MM-dd HH:mm:ss">
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="magb15 layui-col-md4 layui-col-xs12"><label class="layui-form-label">紧急程度</label>
+            <div class="layui-input-block">
+                <!-- ajax动态生成等级列表 -->
+                <select name="urgencyId" id="urgencyType" lay-filter="urgencyType"></select>
+                <!-- 使用隐藏域来保存其他页面传过来的紧急程id度ID -->
+                <input type="hidden" class="urgencyId" id="sendUrgencyID" /></div>
+        </div>
+    </div>
+    <br>
+    <div class="layui-form-item layui-row layui-col-xs12"><label class="layui-form-label">内容</label>
+        <div class="layui-input-block">
+            <textarea placeholder="请输入内容" class="layui-textarea content" name="content" required lay-verify="required"   ></textarea>
+        </div>
+    </div>
+    <!--隐藏提交按钮，用来触发layui的验证，因为open中的按钮没法添加lay-submit，所以没有办法触发验证
+        标记验证是否通过
+    -->
+    <input class="submit" lay-submit="" lay-filter="msgSubmit"type="hidden" />
+
+</form>
+
+</body>
+<script th:inline="none">
+
+    // 从后台读取数据渲染到弹出层的select中，并设置默认选中值：
+    layui.use('form', function () {
+        $ = layui.jquery;
+        var form = layui.form;
+        $.ajax({
+            type: 'get',
+            url: '/urgency/list', //后端接口
+            dataType: 'json',
+            success: function (rec) {
+                if (rec.code == 200) {
+                    var urgencyType = document.getElementById('urgencyType');
+                    //选中某一行，点击修改时页面传过来的改行的urgencyId
+                    var sendUrgencyID = document.getElementById('sendUrgencyID');
+                    $.each(rec.data, function (i, item) {
+                        var option = document.createElement("option"); //创建option标签
+                        option.setAttribute("value", item['id']);//设置value值
+                        if (!sendUrgencyID) {
+                            //要同时判断 null 和 undefined
+                        } else {
+                            if (item['id'] == sendUrgencyID.value) {
+                                option.setAttribute("selected", 'true');//设置选中状态
+                            }
+                        }
+                        option.innerText = item['name'];//显示text内容
+                        urgencyType.appendChild(option);
+                        form.render('select');//重新渲染
+                    })
+                }
+            }
+        });
+
+        //监听提交，当验证通过时才会执行该方法
+        form.on('submit(msgSubmit)', function(data){
+            $(".submit").val(1);
+        });
+
+    })
+    //使用时间选择模块
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        //时间选择器
+        laydate.render({
+            elem: '#test5'
+            , type: 'datetime'
+            ,max: 7 //7天后
+        });
+    });
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$ , colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            ,color: 'rgba(57, 61, 73, 1)'
+            ,size: 'xs'
+            ,format: 'rgb'
+            ,predefine: true
+            ,alpha: true
+            ,change: function(color){
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+
+</script>
+</html>

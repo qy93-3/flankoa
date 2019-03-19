@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_avxrcrz7t9t.css" />
+</head>
+
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--引入top-->
+    <div th:replace="~{/commons/bar::top}"></div>
+    <!--引入slide-->
+    <div th:replace="~{/commons/bar::slide}"></div>
+    <!--content-->
+    <div class="layui-body">
+        <fieldset class="layui-elem-field " style="margin-top: 20px;text-align: center;">
+            <legend>出差申请单</legend>
+            <div class="layui-field-box">
+                <!--表单-->
+                <form class="layui-form" action="">
+                    <!--一行两列-->
+                    <div class="layui-row">
+                        <!--第一列-->
+                        <div class="layui-col-md6">
+                            <!--标题-->
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <!--申请人-->
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">申请人</label>
+                                <div class="layui-input-block">
+                                    <input type="hidden" name="evectionUser" th:value="${session.user.userId}" hidden="hidden" autocomplete="off" class="layui-input">
+                                    <input type="text"  th:value="${session.user.realName}" required readly=readly autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <!--开始日期-->
+                            <div class="layui-form-item layui-row layui-col-xs12">
+                                <label class="layui-form-label">开始日期</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input createTime" name="startTime" required lay-verify="required" id="test5" placeholder="yyyy-MM-dd HH:mm:ss">
+                                </div>
+                            </div>
+                            <!--相关资料-->
+                            <div class="layui-form-item layui-row layui-col-xs12">
+                                <label class="layui-form-label">相关资料</label>
+                                <div class="layui-input-block">
+                                    <button type="button" name="filePath" class="layui-btn layui-btn-fluid " id="test1"> <i class="layui-icon">&#xe67c;</i>上传文件	</button>
+                                </div>
+                            </div>
+                            <!--出差原因-->
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">文本域</label>
+                                <div class="layui-input-block">
+                                    <textarea name="evectionCause" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!--第二列-->
+                        <div class="layui-col-md6">
+                            <!--紧急程度-->
+                            <div class="layui-form-item ">
+                                <label class="layui-form-label">紧急程度</label>
+                                <div class="layui-input-block"style='text-align: left'>
+                                    <!-- ajax动态生成紧急程度列表 -->
+                                    <select name="urgencyId"  id="urgencyType" lay-filter="urgencyType"></select>
+                                </div>
+                            </div>
+                            <!--外出类型-->
+                            <div class="layui-form-item ">
+                                <label class="layui-form-label">外出类型</label>
+                                <div class="layui-input-block"style='text-align: left'>
+                                    <!-- ajax动态生成外出类型列表 -->
+                                    <select name="typeId"  id="urgencyType1" lay-filter="urgencyType"></select>
+                                </div>
+                            </div>
+                            <!--结束日期-->
+                            <div class="layui-form-item layui-row layui-col-xs12">
+                                <label class="layui-form-label">结束日期</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input createTime" name="endTime" required lay-verify="required" id="test6" placeholder="yyyy-MM-dd HH:mm:ss">
+                                </div>
+                            </div>
+                            <!--审核人-->
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">审核人</label>
+                                <div class="layui-input-block">
+                                    <div class="layui-row">
+                                        <div class="layui-col-md8" style="margin-top: -35px">
+                                            <input type="text" name="evectionUser" required readly=readly placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                        </div>
+                                        <div class="layui-col-md4 layui-col-md-offset5" style="margin-top: -29px;margin-left: 336px">
+                                            <a href="javascript:;" id="addPhone" class="layui-btn layui-btn-xs layui-btn-danger layui-icon layui-icon-add-1">通讯录</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+    </div>
+</div>
+</body>
+<!--通讯录弹出框
+    实现方式：①可以设置可见性 ②可以将元素放在body外
+-->
+
+<div id="phonePop" style="width: 100px;">
+    <div class="layui-collapse" lay-accordion>
+        <div class="layui-colla-item" >
+            <h2 class="layui-colla-title" style="width: 187px;">内部通讯录</h2>
+            <div class="layui-colla-content layui-show" id="inner" style="width: 200px; margin-left: -27px;text-align: left"></div>
+        </div>
+        <div class="layui-colla-item" >
+            <h2 class="layui-colla-title" style="width: 187px;">外部通讯录</h2>
+            <div class="layui-colla-content layui-show" id="outter" style="width: 187px; margin-left: -15px;text-align: left"></div>
+        </div>
+
+    </div>
+</div>
+<script th:inline="none">
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    //使用时间选择模块
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        //时间选择器
+        laydate.render({
+            elem: '#test5'
+            , type: 'datetime'
+            ,max: 7 //7天后
+        });
+        laydate.render({
+            elem: '#test6'
+            , type: 'datetime'
+            ,max: 7 //7天后
+        });
+    });
+
+    // 从后台读取数据渲染到弹出层的select中，并设置默认选中值：
+    layui.use('form', function () {
+        $ = layui.jquery;
+        var form = layui.form;
+        //渲染紧急程度下拉框
+        $.ajax({
+            type: 'get',
+            url: '/urgency/list', //后端接口
+            dataType: 'json',
+            success: function (rec) {
+                if (rec.code == 200) {
+                    var urgencyType =$("#urgencyType");
+                    $.each(rec.data, function (i, item) {
+                        var option=$("<option ></option>").val(item['id']).text( item['name']);
+                        urgencyType.append(option);
+                        form.render('select');//重新渲染
+                    })
+                }
+            }
+        });
+        //渲染外出类型下拉框
+        $.ajax({
+            type: 'get',
+            url: '/type/list', //后端接口
+            dataType: 'json',
+            success: function (rec) {
+                if (rec.code == 200) {
+                    console.log(rec)
+                    var urgencyType =$("#urgencyType1");
+                    $.each(rec.data, function (i, item) {
+                        var option=$("<option ></option>").val(item['id']).text( item['type']);
+                        urgencyType.append(option);
+                        form.render('select');//重新渲染
+                    })
+                }
+            }
+        });
+        //监听提交，当验证通过时才会执行该方法
+        form.on('submit(msgSubmit)', function(data){
+            console.log(123)
+            $.ajax({
+                url:'/evection/add',
+                type:'post',
+                data:data.field,
+                contentType: "application/json;charset=UTF-8"
+            });
+        });
+    })
+    //添加弹出层
+    var layerIns=layui.use('jquery',function () {
+        var $= layui.jquery;
+        $(document).on('click', '#addPhone', function () {
+            $.ajax({
+                url:'/email/phoneList',
+                type:'get',
+                success:function (res) {
+                    layer.open({
+                        type: 1,
+                        // title:"<b>通讯录</b>",
+                        title:false,
+                        content: $('#phonePop'),
+                        area: ['10%','93%'],
+                        offset: 'rb',
+                        closeBtn: 0,
+                        shade: 0.1,
+                        anim:5,
+                        shadeClose:true,
+                        resize:false,
+                        scrollbar:true,
+                        move:false,
+                        success: function(layero, index){
+                            //layero是当前层的dom对象，通过该对象可以获取弹出层里面的对象，获取值或者赋值
+                            // console.log(layero.find("#test").text())
+                            var inner = layero.find("#inner");
+                            var outter = layero.find("#outter");
+                            //添加之前先清除所有子元素
+                            inner.empty();
+                            outter.empty();
+                            $.each(res.data, function (i,item) {
+                                console.log(item.name)
+                                if (item.type === '内部通讯录') {
+                                    var option = $("<button  class='layui-btn  layui-btn-danger layui-btn-fluid' style='text-align: left'></button>").val(item.id).text(item.name+"-"+item.company);
+                                    inner.append(option);
+                                } else {
+                                    var option = $("<button class='layui-btn layui-btn-danger layui-btn-fluid' style='text-align: left'></button>").val(item.id).text(item.name+"-"+item.company);
+                                   outter.append(option);
+                                }
+                            });
+
+                        }
+
+                    });
+                }
+            });
+
+        });
+    })
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$ , colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            ,color: 'rgba(57, 61, 73, 1)'
+            ,size: 'xs'
+            ,format: 'rgb'
+            ,predefine: true
+            ,alpha: true
+            ,change: function(color){
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+</script>
+
+</html>

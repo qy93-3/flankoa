@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css" />
+</head>
+
+<body >
+
+<form class="layui-form" action="#"  id="messageEditForm" style="width:80%;">
+    <div class="layui-form-item layui-row layui-col-xs12"><label class="layui-form-label">部门名字</label>
+        <div class="layui-input-block">
+            <!-- 使用隐藏域用于保存编辑项的ID值，便于提交修改 -->
+            <input type="hidden" class="id" name="deptId">
+            <input type="text" class="layui-input realName" required lay-verify="required"  name="name">
+        </div>
+    </div>
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">传真</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input fax" name="fax" required  lay-verify="required" >
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">电话</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input phone" name="phone"   lay-verify="number" >
+        </div>
+    </div>
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input eamil" name="eamil"   lay-verify="email" >
+        </div>
+    </div>
+
+    <!--隐藏提交按钮，用来触发layui的验证，因为open中的按钮没法添加lay-submit，所以没有办法触发验证
+        标记验证是否通过
+    -->
+    <input class="submit" lay-submit="" lay-filter="msgSubmit"type="hidden" />
+
+</form>
+
+</body>
+<script th:inline="none">
+
+    layui.use('form', function () {
+        $ = layui.jquery;
+        var form = layui.form;
+        //监听提交，当验证通过时才会执行该方法
+        form.on('submit(msgSubmit)', function(data){
+            $(".submit").val(1);
+        });
+
+    })
+
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$ , colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            ,color: 'rgba(57, 61, 73, 1)'
+            ,size: 'xs'
+            ,format: 'rgb'
+            ,predefine: true
+            ,alpha: true
+            ,change: function(color){
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+</script>
+</html>

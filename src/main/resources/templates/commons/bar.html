@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>公共页面代码</title><script src="http://www.jq22.com/jquery/1.11.1/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-ui.min.js}"></script>-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css" />
+</head>
+<body>
+<!--nav-->
+<div class="layui-header" th:fragment="top">
+    <div class="layui-logo">FlankOA</div>
+
+    <ul class="layui-nav layui-layout-right">
+
+        <!--邮件-->
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="animation-left-nav" th:href="@{/email/mana}" class="iconfont layui-extendfajianxiang"></a>
+        </li>
+        <!--锁屏-->
+        <li class="layui-nav-item">
+            <a href="lock.html" th:href="@{/user/lock}"  class="layui-icon layui-icon-password"></a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">
+                <img src="http://t.cn/RCzsdCq" class="layui-nav-img">[[${session.user.realName}]]
+            </a>
+            <dl class="layui-nav-child">
+
+                <!--<dd>-->
+                    <!--<a href=""  class="layui-icon layui-icon-username">基本资料</a>-->
+                <!--</dd>-->
+                <dd>
+                    <!--皮肤切换-->
+                    <div style="margin-left: 10px;">
+                        <div id="test-all" style="width:33px;"></div>
+                        <span style="color:black" >设置主题</span>
+                    </div>
+
+                </dd>
+                <dd>
+                    <a href="login.html" class="layui-icon layui-icon-close" th:href="@{/user/logout}">退出</a>
+                </dd>
+            </dl>
+        </li>
+
+    </ul>
+</div>
+<!--slide-->
+<div class="layui-side layui-bg-black" th:fragment="slide">
+    <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <li class="layui-nav-item layui-nav-itemed">
+                <a class="" href="javascript:;">公告管理</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;"  class="site-demo-active test1" th:href="@{/message/mana}">通知管理</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;" class="site-demo-active test2" th:href="@{/message/list}" >通知列表</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">考勤管理</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;" th:href="@{/attends/list}">考勤列表</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;" th:href="@{/attends/report}">考勤报表</a>
+                    </dd>
+                    <!--<dd>-->
+                        <!--<a href="javascript:;">考勤月报表</a>-->
+                    <!--</dd>-->
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">个人管理</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;" th:href="@{/email/mana}">邮件管理</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;"th:href="@{/email/calendar}">我的日历</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;" th:href="@{/email/phoneMana}">通讯录</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">流程管理</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;"  th:href="@{/process/addProcess}"> 新建流程</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;"  th:href="@{/process/myProcessHtml}">我的申请</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;"  th:href="@{/process/processCheck}">流程审核</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <!--<dd>-->
+                        <!--<a href="javascript:;"  th:href="@{/menu/mana}">菜单管理</a>-->
+                    <!--</dd>-->
+                    <dd>
+                        <a href="javascript:;"  th:href="@{/dept/mana}">部门管理</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;"  th:href="@{/user/mana}">用户管理</a>
+                    </dd>
+                    <!--<dd>-->
+                        <!--<a href="javascript:;" th:href="@{/role/mana}">角色管理</a>-->
+                    <!--</dd>-->
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+</div>
+</body>
+</html>

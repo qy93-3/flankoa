@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FlankOA</title>
+    <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
+    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
+    <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
+    <!--导入阿里图标库-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css"/>
+</head>
+
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--引入top-->
+    <div th:replace="~{/commons/bar::top}"></div>
+    <!--引入slide-->
+    <div th:replace="~{/commons/bar::slide}"></div>
+    <!--content-->
+    <div class="layui-body">
+        <div style="margin-left: 4%;margin-top: 2%">
+            <!--工具条-->
+            <script type="text/html" id="toolBar">
+                <!--增删改-->
+                <span>
+                    <button class="layui-btn  layui-btn-sm  layui-icon layui-icon-refresh"
+                            lay-event="refresh"> 刷新 </button>
+                    <!--签到-->
+                    &nbsp;
+                 <a href="javascript:;" style="font-size: 26px; color: #D7174D;" class="layui-icon layui-icon-location  " id="attend" attend="false">签到</a>
+                </span>
+            </script>
+            <!--数据显示-->
+            <table id="demo" lay-filter="test"></table>
+        </div>
+
+    </div>
+</div>
+</body>
+<script th:inline="none">
+
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    layui.use('jquery', function () {
+        var $ = layui.jquery;
+        //点击签到时触发的事件
+        $("#attend").click(function () {
+            alert(12)
+            return false;
+        });
+
+    })
+
+    //渲染获取到的数据
+    //使用table 模块
+    layui.use(['table', 'jquery'], function () {
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+        var form = layui.form, table = layui.table, layer = layui.layer, vipTable = layui.vip_table, $ = layui.jquery
+        var popForm;
+        table.render({
+            elem: '#demo'
+            , id: 'messageTable'
+            , height: 500
+            , url: '/attends/page' //数据接口
+            , page: true //开启分页
+            , cellMinWidth: 80
+            , toolbar: '#toolBar'
+            , limit: 8
+            , limits: [8, 10, 15]
+            , cols: [[
+                , {field: 'attendsId', title: 'ID', sort: true, fixed: 'left'}
+                , {field: 'type', title: '签到类型'}
+                , {field: 'time', title: '签到时间', sort: true}
+                , {field: 'realName', title: '签到人', templet: '<div>{{d.user.realName}}</div>'}
+                , {field: 'status', title: '签到状态', templet: '#statusTpl'}
+            ]]
+        });
+        //  渲染完后刷新一次表单，如果不刷新，排版会乱
+        layui.table.reload('messageTable', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'refresh':
+                    table.reload('messageTable', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+                    break;
+            }
+            ;
+        });
+
+    });
+    //颜色编辑模块
+    layui.use('colorpicker', function () {
+        var $ = layui.$, colorpicker = layui.colorpicker;
+        //开启全功能
+        colorpicker.render({
+            elem: '#test-all'
+            , color: 'rgba(57, 61, 73, 1)'
+            , size: 'xs'
+            , format: 'rgb'
+            , predefine: true
+            , alpha: true
+            , change: function (color) {
+                //给当前页面头部和左侧设置主题色
+                $('.layui-header,.layui-side-scroll,.layui-nav').css('background-color', color);
+            }
+        });
+
+    });
+
+    //签到
+    layui.use('jquery',function () {
+        var count=0;//用来记录点击的次数
+        var $ = layui.jquery;
+        $(document).on('click','#attend',function () {
+            count++;
+            $.ajax({
+                type:'GET',
+                url:'/attends/attend',
+                data:'count='+count,
+                success:function (res) {
+                    if (res.code == 200) {
+                        $("#attend").css("color", "red");
+                        layer.msg(res.msg);
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            })
+        });
+    })
+</script>
+<!--自定义模板-->
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status.statusName === '准时'){ }}
+    <button class="layui-btn layui-btn-xs layui-btn-primary ">{{d.status.statusName}}</button>
+    {{#  } else if(d.status.statusName === '早退') { }}
+    <button class="layui-btn layui-btn-xs layui-btn-danger ">{{d.status.statusName}}</button>
+    {{#  } else  { }}
+    <button class="layui-btn layui-btn-xs  ">{{d.status.statusName}}</button>
+    {{#  } }}
+</script>
+
+</html>
