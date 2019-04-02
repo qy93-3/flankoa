@@ -91,13 +91,18 @@ public class RoleMenuController {
     @PostMapping("/grant")
     @ResponseBody
     public Result grant(@Param("roleId") String roleId,@Param("menuIds")Integer[] menuIds) {
-        RoleMenu roleMenu=new RoleMenu();
+       /* RoleMenu roleMenu=new RoleMenu();
         roleMenuService.deleteById(Integer.parseInt(roleId));
         for (Integer menuId:menuIds) {
             roleMenu.setRoleId(Integer.parseInt(roleId));
             roleMenu.setMenuId(menuId);
             System.out.println(roleMenu.toString());
-            roleMenuService.insert(roleMenu);
+           *//* roleMenuService.insert(roleMenu);*//*
+        }*/
+        System.out.println(roleId);
+        for (Integer menuId:menuIds
+             ) {
+            System.out.println(menuId);
         }
         return new Result<Role>().setCode(200).setMsg("授权成功");
     }

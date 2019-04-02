@@ -1,8 +1,8 @@
-layui.use(['element','jquery'], function () {
+layui.use(['element', 'jquery'], function () {
     var element = layui.element;
     var $ = layui.jquery;
     $(function () {
-        var html="";
+        var html = "";
         //获取菜单
         $.ajax({
             url: "/roleMenu/menuInfo",
@@ -11,7 +11,7 @@ layui.use(['element','jquery'], function () {
             data: {},
             success: function (data) {
                 $("#nav").find('span.layui-nav-bar').remove()
-                var navs =data.data;
+                var navs = data.data;
                 /*html += '<ul class="layui-nav layui-nav-tree"  lay-filter="test">';*/
                 $.each(navs, function (i, item) {
                     html = html + '<li class="layui-nav-item">';
@@ -43,7 +43,17 @@ layui.use(['element','jquery'], function () {
                 /* html += '</ul>';*/
                 $('#nav').html(html);
 
-                element.render('nav','test');
+                element.render('nav', 'test');
+               var href = "";
+                element.on('nav(test)', function (elem) {
+                    href = $(elem).attr("th:href").replace("@{", "").replace("}", "")
+                    if ($(elem).attr("th:href")=="@{null} ") {
+                       return false;
+                    } else {
+                        $(elem).attr("href",href);
+                    }
+                    console.log(elem); //得到当前点击的DOM对象
+                });
             }
         })
     })

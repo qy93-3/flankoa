@@ -40,7 +40,7 @@
 
     <div id="xtree1" class="xtree_contianer"></div>
 </form>-->
-<form class="layui-form" action="#"  id="messageEditForm">
+<form class="layui-form" action="#"  id="roleGrant">
     <div class="layui-form-item layui-row layui-col-xs12">
         <div class="layui-input-block">
             <!-- 使用隐藏域用于保存编辑项的ID值，便于提交修改 -->
@@ -54,10 +54,6 @@
     -->
     <input class="submit" lay-submit="" lay-filter="msgSubmit" type="hidden" />
 
-    <div class="div-btns">
-        <input type="button" id="btn1" value="获取全部[选中的][末级节点]原checkbox DOM对象，返回Array"
-               class="layui-btn layui-btn-fluid"/>
-    </div>
 </form>
 </body>
 <script th:inline="none">
@@ -100,7 +96,7 @@
             , form: form                    //必填三兄弟之这才是真老大
             , data: '/roleMenu/grantRoleInfo' //必填三兄弟之这也算是老大
             , isopen: false  //加载完毕后的展开状态，默认值：true
-            , ckall: true    //启用全选功能，默认值：false
+            , ckall: false    //启用全选功能，默认值：false
             , ckallback: function () {
             } //全选框状态改变后执行的回调函数
             , icon: {        //三种图标样式，更改几个都可以，用的是layui的图标
@@ -133,8 +129,8 @@
             }
         });
         form.on('submit(msgSubmit)', function(data){
-            alert($("#roleId").val())
-            alert(menuIds)
+            /*alert($("#roleId").val())
+            alert(menuIds)*/
             $.ajax({
                 url: "/roleMenu/grant",
                 type: "post",
@@ -145,7 +141,6 @@
                 },
                 // contentType: "application/json;charset=UTF-8", // 发送数据的格式
                 success: function (result) {
-                    alert(2)
                     if (result.code == 200) {
                         layer.msg("授权成功", {icon: 6});
                     } else {

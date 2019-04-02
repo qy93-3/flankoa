@@ -142,7 +142,7 @@
                         layer.msg('只能同时编辑一个');
                     } else {
                         // layer.alert('编辑 [id]：' + checkStatus.data[0].id);
-                        editMeg("角色授权", data, "/role/grant");
+                        grant("角色授权", data, "/role/grant");
                     }
                     break;
             }
@@ -219,7 +219,7 @@
         });
     }
 
-    function editMeg(title, data, url) {
+    function grant(title, data, url) {
 
         var index = layui.layer.open({
             title: title,
@@ -250,7 +250,7 @@
                 if (body.find(".submit").val() != 1) {
                     return false;
                 }
-                var form = body.find("#messageEditForm").serializeArray();//获取指定id的表单
+                var form = body.find("#roleGrant").serializeArray();//获取指定id的表单
                 $.each(form, function () {
                     data[this.name] = this.value;
                 });
