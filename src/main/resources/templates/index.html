@@ -72,6 +72,7 @@
 <script>
     //表单检测
     layui.use('form', function () {
+
         var form = layui.form;
         form.on('submit(mySubmit)', function () {
             var username = $(":input[type='text']").val();
@@ -83,7 +84,9 @@
                 data:data,
                 type:"POST",
                 success:function (result) {
+                    console.log(result.code)
                     if (result.code == 200) {
+                        console.log(1);
                         show();
                     } else {
                         layer.msg("用户名或密码不正确",{icon:5})
@@ -91,54 +94,57 @@
                 }
             });
 
-        });
+        })
+        //动画效果
+        function show() {
+            $('.login').addClass('test');
+            setTimeout(function () {
+                $('.login').addClass('testtwo');
+            }, 300);
+            setTimeout(function () {
+                $('.authent').show().animate({
+                    right: -320
+                }, {
+                    easing: 'easeOutQuint',
+                    duration: 600,
+                    queue: false
+                });
+                $('.authent').animate({
+                    opacity: 1
+                }, {
+                    duration: 200,
+                    queue: false
+                }).addClass('visible');
+            }, 500);
+            setTimeout(function () {
+                $('.authent').show().animate({
+                    right: 90
+                }, {
+                    easing: 'easeOutQuint',
+                    duration: 600,
+                    queue: false
+                });
+                $('.authent').animate({
+                    opacity: 0
+                }, {
+                    duration: 200,
+                    queue: false
+                }).addClass('visible');
+                $('.login').removeClass('testtwo');
+            }, 2500);
+            setTimeout(function () {
+                $('.login').removeClass('test');
+                $('.login div').fadeOut(123);
+            }, 2800);
+            setTimeout(function () {
+                $('.success').fadeIn();
+            }, 3200);
+        }
+
     });
 
-    //动画效果
-    function show() {
-        $('.login').addClass('test');
-        setTimeout(function () {
-            $('.login').addClass('testtwo');
-        }, 300);
-        setTimeout(function () {
-            $('.authent').show().animate({
-                right: -320
-            }, {
-                easing: 'easeOutQuint',
-                duration: 600,
-                queue: false
-            });
-            $('.authent').animate({
-                opacity: 1
-            }, {
-                duration: 200,
-                queue: false
-            }).addClass('visible');
-        }, 500);
-        setTimeout(function () {
-            $('.authent').show().animate({
-                right: 90
-            }, {
-                easing: 'easeOutQuint',
-                duration: 600,
-                queue: false
-            });
-            $('.authent').animate({
-                opacity: 0
-            }, {
-                duration: 200,
-                queue: false
-            }).addClass('visible');
-            $('.login').removeClass('testtwo');
-        }, 2500);
-        setTimeout(function () {
-            $('.login').removeClass('test');
-            $('.login div').fadeOut(123);
-        }, 2800);
-        setTimeout(function () {
-            $('.success').fadeIn();
-        }, 3200);
-    }
+
+
 
     $('input[type="text"],input[type="password"]').focus(function () {
         $(this).prev().animate({

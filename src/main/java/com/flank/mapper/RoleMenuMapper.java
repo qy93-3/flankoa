@@ -1,7 +1,10 @@
 package com.flank.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.flank.beans.Menu;
 import com.flank.beans.RoleMenu;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,4 @@ import com.flank.beans.RoleMenu;
  * @since 2019-03-08
  */
 public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
-
 }

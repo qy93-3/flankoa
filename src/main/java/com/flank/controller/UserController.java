@@ -48,6 +48,7 @@ public class UserController {
             //设置session的失效时间为6个小时
             session.setMaxInactiveInterval(60*60*6);
             session.setAttribute("user", user);
+
             return new Result().setCode(200);
         } else {
             return new Result().setCode(0);

@@ -60,7 +60,7 @@
             elem: '#demo'
             , id: 'messageTable'
             , height: 500
-            , url: '/message/page' //数据接口
+            , url: '/menu/page' //数据接口
             , page: true //开启分页
             , cellMinWidth: 80
             , toolbar: '#toolBar'
@@ -68,13 +68,11 @@
             , limits: [8, 10, 15]
             , cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
-                , {field: 'id', title: 'ID', sort: true, fixed: 'left'}
-                , {field: 'content', title: '内容'}
-                , {field: 'createTime', title: '创建时间', sort: true}
-                // ,{field: 'urgencyId', title: '紧急程度id'},
-                // ,{field: 'authorId', title: '作者id' }
-                , {field: 'userName', title: '作者名', templet: '<div>{{d.user.realName}}</div>'}
-                , {field: 'name', title: '紧急程度', templet: '#urgencyTpl'}
+                , {field: 'menuId', title: 'ID', sort: true, fixed: 'left'},
+                {field: 'pid', title: 'pid', sort: true}
+                , {field: 'content', title: '菜单名称'}
+                , {field: 'createDate', title: '创建时间', sort: true}
+                , {field: 'href', title: 'href'}
             ]]
         });
 
@@ -84,7 +82,7 @@
             var data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
                 case 'add':
-                    editMeg("添加公告", {}, "/message/add");
+                    editMeg("添加菜单", {}, "/menu/add");
                     break;
                 case 'update':
                     if (data.length === 0) {
@@ -93,7 +91,7 @@
                         layer.msg('只能同时编辑一个');
                     } else {
                         // layer.alert('编辑 [id]：' + checkStatus.data[0].id);
-                        editMeg("编辑公告", data, "/message/edit");
+                        editMeg("编辑菜单", data, "/menu/edit");
                     }
                     break;
                 case 'delete':
@@ -104,11 +102,11 @@
                             var ids = "";
                             if (data.length > 0) {
                                 for (var i = 0; i < data.length; i++) {
-                                    ids += checkStatus.data[i].id + "-";
+                                    ids += checkStatus.data[i].menuId + "-";
                                 }
                             }
                             $.ajax({
-                                url: "/message/delete",
+                                url: "/menu/delete",
                                 type: "get",
                                 data: "ids=" + ids,
                                 // contentType: "application/json;charset=UTF-8", // 发送数据的格式
@@ -153,17 +151,16 @@
             btnAlign: 'c',
             closeBtn: 2,
             type: 2,
-            content: "/message/edit",//弹出层页面
+            content: "/menu/edit",//弹出层页面
             area: ['500px', '450px'],
             success: function (layero, index) {
                 var body = layui.layer.getChildFrame('body', index);
                 if (data) {
-                    body.find(".id").val(data[0].id);
-                    body.find(".authorId").val(data[0].authorId);
-                    body.find(".realName").val(data[0].user.realName);
-                    body.find(".urgencyId").val(data[0].urgencyId);
-                    body.find(".createTime").val(data[0].createTime);
-                    body.find(".content").text(data[0].content);
+                    body.find(".id").val(data[0].menuId);
+                    body.find(".pid").val(data[0].pid);
+                    body.find(".content").val(data[0].content);
+                    body.find(".createDate").val(data[0].createDate);
+                    body.find(".href").text(data[0].href);
                     body.find(".submit").text(url);
                     form.render();
                 }
@@ -197,7 +194,7 @@
                             layui.use('table', function () {
                                 var table = layui.table;
                                 table.reload('messageTable', {
-                                    url: '/message/page' //数据接口，更新成功后刷新数据表格
+                                    url: '/menu/page' //数据接口，更新成功后刷新数据表格
                                 });
                             });
                         } else {

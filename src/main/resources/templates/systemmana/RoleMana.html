@@ -32,6 +32,8 @@
                             lay-event="delete">删除   </button>
                     <button class="layui-btn  layui-btn-sm  layui-icon layui-icon-refresh"
                             lay-event="refresh"> 刷新 </button>
+                     <button class="layui-btn  layui-btn-sm layui-btn-warm layui-icon layui-icon-auz"
+                             lay-event="grant"> 授权 </button>
 
                 </span>
             </script>
@@ -60,7 +62,7 @@
             elem: '#demo'
             , id: 'messageTable'
             , height: 500
-            , url: '/message/page' //数据接口
+            , url: '/role/page' //数据接口
             , page: true //开启分页
             , cellMinWidth: 80
             , toolbar: '#toolBar'
@@ -68,13 +70,8 @@
             , limits: [8, 10, 15]
             , cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
-                , {field: 'id', title: 'ID', sort: true, fixed: 'left'}
-                , {field: 'content', title: '内容'}
-                , {field: 'createTime', title: '创建时间', sort: true}
-                // ,{field: 'urgencyId', title: '紧急程度id'},
-                // ,{field: 'authorId', title: '作者id' }
-                , {field: 'userName', title: '作者名', templet: '<div>{{d.user.realName}}</div>'}
-                , {field: 'name', title: '紧急程度', templet: '#urgencyTpl'}
+                , {field: 'roleId', title: 'ID', sort: true, fixed: 'left'}
+                , {field: 'roleName', title: '角色名称'}
             ]]
         });
 
@@ -84,7 +81,7 @@
             var data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
                 case 'add':
-                    editMeg("添加公告", {}, "/message/add");
+                    editMeg("添加角色", {}, "/role/add");
                     break;
                 case 'update':
                     if (data.length === 0) {
@@ -93,7 +90,7 @@
                         layer.msg('只能同时编辑一个');
                     } else {
                         // layer.alert('编辑 [id]：' + checkStatus.data[0].id);
-                        editMeg("编辑公告", data, "/message/edit");
+                        editMeg("编辑角色", data, "/role/edit");
                     }
                     break;
                 case 'delete':
@@ -104,11 +101,11 @@
                             var ids = "";
                             if (data.length > 0) {
                                 for (var i = 0; i < data.length; i++) {
-                                    ids += checkStatus.data[i].id + "-";
+                                    ids += checkStatus.data[i].roleId + "-";
                                 }
                             }
                             $.ajax({
-                                url: "/message/delete",
+                                url: "/role/delete",
                                 type: "get",
                                 data: "ids=" + ids,
                                 // contentType: "application/json;charset=UTF-8", // 发送数据的格式
@@ -137,6 +134,16 @@
                         }
                     });
                     break;
+                case 'grant':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        // layer.alert('编辑 [id]：' + checkStatus.data[0].id);
+                        editMeg("角色授权", data, "/role/grant");
+                    }
+                    break;
             }
             ;
         });
@@ -153,17 +160,13 @@
             btnAlign: 'c',
             closeBtn: 2,
             type: 2,
-            content: "/message/edit",//弹出层页面
+            content: "/role/edit",//弹出层页面
             area: ['500px', '450px'],
             success: function (layero, index) {
                 var body = layui.layer.getChildFrame('body', index);
                 if (data) {
-                    body.find(".id").val(data[0].id);
-                    body.find(".authorId").val(data[0].authorId);
-                    body.find(".realName").val(data[0].user.realName);
-                    body.find(".urgencyId").val(data[0].urgencyId);
-                    body.find(".createTime").val(data[0].createTime);
-                    body.find(".content").text(data[0].content);
+                    body.find(".id").val(data[0].roleId);
+                    body.find(".roleName").val(data[0].roleName);
                     body.find(".submit").text(url);
                     form.render();
                 }
@@ -185,6 +188,7 @@
                     data[this.name] = this.value;
                 });
                 data = JSON.stringify(data);
+
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -197,7 +201,73 @@
                             layui.use('table', function () {
                                 var table = layui.table;
                                 table.reload('messageTable', {
-                                    url: '/message/page' //数据接口，更新成功后刷新数据表格
+                                    url: '/role/page' //数据接口，更新成功后刷新数据表格
+                                });
+                            });
+                        } else {
+                            layer.alert(rec.msg, {icon: 5}, function (index) {
+                                layer.close(index);
+                            });
+                        }
+                        layer.close(index);
+                    }
+
+                });
+                return false;//取消按钮的默认行为
+            }
+        });
+    }
+
+    function editMeg(title, data, url) {
+
+        var index = layui.layer.open({
+            title: title,
+            btn: ['确认', '取消'],//弹出层按钮
+            btnAlign: 'c',
+            closeBtn: 2,
+            type: 2,
+            content: "/role/grant",//弹出层页面
+            area: ['500px', '450px'],
+            success: function (layero, index) {
+                var body = layui.layer.getChildFrame('body', index);
+                if (data) {
+                    body.find(".id").val(data[0].roleId);
+                    body.find(".roleName").val(data[0].roleName);
+                    body.find(".submit").text(url);
+                    form.render();
+                }
+                setTimeout(function () {
+                    layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {tips: 3});
+                }, 500)
+            },
+            yes: function (index, layero) {//点击“确认”按钮后触发的事件
+                var data = {};
+                var body = layer.getChildFrame('body', index);
+                //触发弹出层的验证
+                body.find(".submit").click();
+                //当弹出层验证通过时，会给弹出层的隐藏域赋值1
+                if (body.find(".submit").val() != 1) {
+                    return false;
+                }
+                var form = body.find("#messageEditForm").serializeArray();//获取指定id的表单
+                $.each(form, function () {
+                    data[this.name] = this.value;
+                });
+                data = JSON.stringify(data);
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: data,
+                    success: function (rec) {
+                        if (rec.code == 200) {
+                            layer.msg(rec.msg, {icon: 6});
+                            layui.use('table', function () {
+                                var table = layui.table;
+                                table.reload('messageTable', {
+                                    url: '/role/page' //数据接口，更新成功后刷新数据表格
                                 });
                             });
                         } else {

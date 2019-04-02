@@ -82,7 +82,7 @@
             var data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
                 case 'add':
-                    editMeg("添加公告", {}, "/dept/add");
+                    editMeg("添加部门", {}, "/dept/add");
                     break;
                 case 'update':
                     if (data.length === 0) {
@@ -91,7 +91,7 @@
                         layer.msg('只能同时编辑一个');
                     } else {
                         // layer.alert('编辑 [id]：' + checkStatus.data[0].id);
-                        editMeg("编辑公告", data, "/dept/edit");
+                        editMeg("编辑部门", data, "/dept/edit");
                     }
                     break;
                 case 'delete':
