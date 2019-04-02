@@ -34,8 +34,8 @@ public class RoleMenuController {
     @Autowired
     MenuService menuService;
 
-    @GetMapping("/menuInfo")
-    public Object menuInfo(HttpSession session) {
+    @RequestMapping("/menuInfo")
+    public  Object  menuInfo(HttpSession session) {
         /*int userId = Integer.parseInt(session.getId());*/
         //根据登录用户的id获取所对应角色的id
         UserRole userRole = userRoleService.selectById(1);
