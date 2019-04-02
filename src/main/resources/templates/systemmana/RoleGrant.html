@@ -8,262 +8,59 @@
     <link rel="stylesheet" href="layui-v2.4.5/css/layui.css" th:href="@{/layui-v2.4.5/css/layui.css}"/>
     <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/layui.js}"></script>
     <script type="text/javascript" src="login/js/jquery-ui.min.js" th:src="@{/login/js/jquery-2.1.1.min.js}"></script>
-    <script src="layui-v2.4.5/layui.js" th:src="@{/layui-v2.4.5/lay.modules/layui-xtree.js}"></script>
+    <script src="layui-v2.4.5/layui-xtree.js" th:src="@{/layui-v2.4.5/layui-xtree.js}"></script>
     <!--导入阿里图标库-->
     <link rel="stylesheet" href="//at.alicdn.com/t/font_1088874_nhvocdb2ud.css"/>
     <style type="text/css">
         form {
-            width: 500px;
+
             margin: 10px auto;
+
         }
 
         h1, h2, h3 {
             padding: 10px 0;
         }
 
-        a {
-            text-align: right;
-            font-size: 18px;
-            color: #1C86EE;
-        }
 
         .xtree_contianer {
-            width: 500px;
-            border: 1px solid #9C9C9C;
+
             overflow: auto;
             margin-bottom: 30px;
             background-color: #fff;
-            padding: 10px 0 25px 5px;
+            padding: 30px 0 25px 50px;
         }
 
-        .div-btns {
-            margin: 20px 0;
-        }
-
-        .layui-form-label {
-            width: 60px !important;
-        }
     </style>
 </head>
 
 <body>
 
-<form class="layui-form" action="#" id="messageEditForm" style="width:80%;">
-    <!-- <div class="layui-form-item layui-row layui-col-xs12"><label class="layui-form-label">角色名称</label>
-         <div class="layui-input-block">
-             &lt;!&ndash; 使用隐藏域用于保存编辑项的ID值，便于提交修改 &ndash;&gt;
-             <input type="hidden" class="id" name="roleId">
-             <input type="text" class="layui-input roleName" required lay-verify="required"  name="roleName">
-         </div>
-     </div>-->
+<!--<form class="layui-form" action="#" id="messageEditForm" style="width:80%;">
+
+    <div id="xtree1" class="xtree_contianer"></div>
+</form>-->
+<form class="layui-form" action="#"  id="messageEditForm">
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <div class="layui-input-block">
+            <!-- 使用隐藏域用于保存编辑项的ID值，便于提交修改 -->
+            <input type="hidden" class="id" name="roleId" id="roleId">
+            <div id="xtree3" class="xtree_contianer"></div>
+        </div>
+    </div>
 
     <!--隐藏提交按钮，用来触发layui的验证，因为open中的按钮没法添加lay-submit，所以没有办法触发验证
         标记验证是否通过
     -->
-    <!--<input class="submit" lay-submit="" lay-filter="msgSubmit"type="hidden" />-->
+    <input class="submit" lay-submit="" lay-filter="msgSubmit" type="hidden" />
 
-    <div id="xtree1" class="xtree_contianer"></div>
-
-    <h2>demo2、最基础的用法 - 异步加载</h2>
-    <h3>服务端延迟2秒，可看清加载提示</h3>
-    <div id="xtree2" style="height:400px;overflow:auto;" class="xtree_contianer"></div>
-
-    <h2>demo3、最完整的参数用法</h2>
-    <h3>请仔细的看参数吧</h3>
-    <div id="xtree3" class="xtree_contianer"></div>
-
-    <h2>提供的四种方法</h2>
-    <h3>下面事件作用于demo3，输出为console.log();</h3>
-    <h3>demo宽度适合与F12左右分屏</h3>
     <div class="div-btns">
         <input type="button" id="btn1" value="获取全部[选中的][末级节点]原checkbox DOM对象，返回Array"
                class="layui-btn layui-btn-fluid"/>
     </div>
-    <div class="div-btns">
-        <input type="button" id="btn2" value="获取全部原checkbox DOM对象，返回Array" class="layui-btn layui-btn-fluid"/>
-    </div>
-    <div class="div-btns">
-        <input type="button" id="btn3" value="更新数据，重新渲染" class="layui-btn layui-btn-fluid"/>
-    </div>
-    <div class="div-btns">
-        <div class="layui-form-item">
-            <label class="layui-form-label">value值</label>
-            <div class="layui-input-block">
-                <input type="text" id="txt1" placeholder="如：jd1.1" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <input type="button" id="btn4" value="通过value值找父级DOM对象，顶级节点与错误值均返回null" class="layui-btn layui-btn-fluid"/>
-    </div>
-
 </form>
-
 </body>
 <script th:inline="none">
-
-    var json = [{
-        "menuId": 1,
-        "pid": 0,
-        "content": "公告管理",
-        "createDate": "2019-03-07 12:54:43",
-        "href": null,
-        "children": [{
-            "menuId": 6,
-            "pid": 1,
-            "content": "通知管理",
-            "createDate": "2019-03-07 12:56:04",
-            "href": "/message/mana",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 7,
-            "pid": 1,
-            "content": "通知列表",
-            "createDate": "2019-03-07 12:56:15",
-            "href": "/message/list",
-            "children": null,
-            "status": true
-        }],
-        "status": true
-    }, {
-        "menuId": 2,
-        "pid": 0,
-        "content": "考勤管理",
-        "createDate": "2019-03-07 12:54:56",
-        "href": null,
-        "children": [{
-            "menuId": 8,
-            "pid": 2,
-            "content": "考勤列表",
-            "createDate": "2019-03-07 12:56:28",
-            "href": "/attends/list",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 9,
-            "pid": 2,
-            "content": "考勤报表",
-            "createDate": "2019-03-07 12:56:40",
-            "href": "/attends/report",
-            "children": null,
-            "status": true
-        }],
-        "status": true
-    }, {
-        "menuId": 3,
-        "pid": 0,
-        "content": "个人管理",
-        "createDate": "2019-03-07 12:55:07",
-        "href": null,
-        "children": [{
-            "menuId": 11,
-            "pid": 3,
-            "content": "邮件管理",
-            "createDate": "2019-03-07 12:57:05",
-            "href": "/email/mana",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 12,
-            "pid": 3,
-            "content": "我的日历",
-            "createDate": "2019-03-07 12:57:25",
-            "href": "email/calendar",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 13,
-            "pid": 3,
-            "content": "通讯录",
-            "createDate": "2019-03-07 12:57:36",
-            "href": "/email/phoneMana",
-            "children": null,
-            "status": true
-        }],
-        "status": true
-    }, {
-        "menuId": 4,
-        "pid": 0,
-        "content": "流程管理",
-        "createDate": "2019-03-07 12:55:21",
-        "href": null,
-        "children": [{
-            "menuId": 14,
-            "pid": 4,
-            "content": "新建流程",
-            "createDate": "2019-03-07 12:57:52",
-            "href": "/process/addProcess",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 15,
-            "pid": 4,
-            "content": "我的申请",
-            "createDate": "2019-03-07 12:58:04",
-            "href": "/process/myProcessHtml",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 16,
-            "pid": 4,
-            "content": "流程审核",
-            "createDate": "2019-03-07 12:58:14",
-            "href": "/process/processCheck",
-            "children": null,
-            "status": true
-        }],
-        "status": true
-    }, {
-        "menuId": 5,
-        "pid": 0,
-        "content": "系统管理",
-        "createDate": "2019-03-07 12:55:32",
-        "href": null,
-        "children": [{
-            "menuId": 17,
-            "pid": 5,
-            "content": "菜单管理",
-            "createDate": "2019-03-07 12:58:28",
-            "href": "/menu/mana",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 18,
-            "pid": 5,
-            "content": "部门管理",
-            "createDate": "2019-03-07 12:58:38",
-            "href": "/dept/mana",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 20,
-            "pid": 5,
-            "content": "用户管理",
-            "createDate": "2019-03-07 12:59:01",
-            "href": "/user/mana",
-            "children": null,
-            "status": true
-        }, {
-            "menuId": 21,
-            "pid": 5,
-            "content": "角色管理",
-            "createDate": "2019-03-07 12:59:11",
-            "href": "/role/mana",
-            "children": null,
-            "status": true
-        }],
-        "status": true
-    }]
-
-    /* layui.use('form', function () {
-         $ = layui.jquery;
-         var form = layui.form;
-         //监听提交，当验证通过时才会执行该方法
-         form.on('submit(msgSubmit)', function(data){
-             $(".submit").val(1);
-         });
-
-     })*/
-
     //颜色编辑模块
     layui.use('colorpicker', function () {
         var $ = layui.$, colorpicker = layui.colorpicker;
@@ -284,29 +81,24 @@
     });
 
 
+</script>
+<script type="text/javascript">
+
+    //********************
+    //      正式开始
+    //********************
+
     //layui 的 form 模块是必须的
     layui.use(['form'], function () {
+        $ = layui.jquery;
         var form = layui.form;
+        //监听提交，当验证通过时才会执行该方法
 
-        //1、最基础的用法 - 直接绑定json
-        var xtree1 = new layuiXtree({
-            elem: 'xtree1'   //(必填) 放置xtree的容器，样式参照 .xtree_contianer
-            , form: form     //(必填) layui 的 from
-            , data: json     //(必填) json数据
-        });
-
-        //2、最基础的用法 - 异步加载
-        var xtree2 = new layuiXtree({
-            elem: 'xtree2'                  //(必填) 放置xtree的容器，样式参照 .xtree_contianer
-            , form: form                    //(必填) layui 的 from
-            , data: '/roleMenu/menuInfo' //(必填) 数据接口，需要返回以上结构的json字符串
-        });
-
-        //3、最完整的参数用法
+        var menuIds=new Array();
         var xtree3 = new layuiXtree({
             elem: 'xtree3'                  //必填三兄弟之老大
             , form: form                    //必填三兄弟之这才是真老大
-            , data: '/roleMenu/menuInfo' //必填三兄弟之这也算是老大
+            , data: '/roleMenu/grantRoleInfo' //必填三兄弟之这也算是老大
             , isopen: false  //加载完毕后的展开状态，默认值：true
             , ckall: true    //启用全选功能，默认值：false
             , ckallback: function () {
@@ -325,24 +117,57 @@
                 console.log(data.elem); //得到checkbox原始DOM对象
                 console.log(data.elem.checked); //开关是否开启，true或者false
                 console.log(data.value); //开关value值，也可以通过data.elem.value得到
+                console.log("-----------")
+                var oCks = xtree3.GetAllChecked(); //这是方法  得到全部选中的节点值为menuId值
+
+                for (var i = 0; i < oCks.length; i++) {
+                    var ele=oCks[i].value
+                    if(oCks.indexOf(ele) == -1){
+                        ele=parseInt(ele);
+                        menuIds.push(ele);
+                    }
+                    console.log(oCks[i].value);
+                }
+                console.log("-----------")
                 console.log(data.othis); //得到美化后的DOM对象
             }
         });
+        form.on('submit(msgSubmit)', function(data){
+            alert($("#roleId").val())
+            alert(menuIds)
+            $.ajax({
+                url: "/roleMenu/grant",
+                type: "post",
+                traditional: true,
+                data:{
+                    "roleId":$("#roleId").val(),
+                    "menuIds":menuIds
+                },
+                // contentType: "application/json;charset=UTF-8", // 发送数据的格式
+                success: function (result) {
+                    alert(2)
+                    if (result.code == 200) {
+                        layer.msg("授权成功", {icon: 6});
+                    } else {
+                        layer.msg("授权失败", {icon: 5})
+                    }
+                }
+            });
+            $(".submit").val(1);
+
+        });
+
 
         //提供的方法们
 
         //获取全部[选中的][末级节点]原checkbox DOM对象，返回Array
+        /*document.getElementById('btn1').onclick = function () {
+
+           console.log($("#roleId").val())
+        }*/
+
+        /*//获取全部原checkbox DOM对象，返回Array
         document.getElementById('btn1').onclick = function () {
-
-            var oCks = xtree3.GetChecked(); //这是方法
-
-            for (var i = 0; i < oCks.length; i++) {
-                console.log(oCks[i].value);
-            }
-        }
-
-        //获取全部原checkbox DOM对象，返回Array
-        document.getElementById('btn2').onclick = function () {
 
             var oCks = xtree3.GetAllCheckBox(); //这是方法
 
@@ -367,10 +192,12 @@
                 console.log('无父级节点或value值错误');
             }
 
-        }
+        }*/
+
 
 
     });
+
 
 </script>
 </html>

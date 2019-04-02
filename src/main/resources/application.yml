@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: root
+    password:
     url: jdbc:mysql://localhost:3306/flank_oa?characterEncoding=utf-8
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource #使用该属性来切换数据源

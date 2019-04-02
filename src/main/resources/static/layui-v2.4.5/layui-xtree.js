@@ -122,8 +122,8 @@ layuiXtree.prototype.dataBind = function (d) {
             var xtree_ischecked = '';
             var xtree_isdisabled = d[i].disabled ? ' disabled="disabled" ' : '';
             _this._domStr += '<div class="layui-xtree-item">';
-            d[i].data=d[i].data||[];
-            if (d[i].data.length > 0)
+            d[i].children=d[i].children||[];
+            if (d[i].children.length > 0)
                 _this._domStr += '<i class="layui-icon layui-xtree-icon" data-xtree="' + (_this._isopen ? '1' : '0') + '">' + (_this._isopen ? _this._iconOpen : _this._iconClose) + '</i>';
             else {
                 _this._domStr += '<i class="layui-icon layui-xtree-icon-null">' + _this._iconEnd + '</i>';
@@ -131,8 +131,8 @@ layuiXtree.prototype.dataBind = function (d) {
                 xtree_ischecked = d[i].checked ? ' checked ' : '';
                 xtree_isdisabled = d[i].disabled ? ' disabled="disabled" ' : '';
             }
-            _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend + xtree_ischecked + xtree_isdisabled + ' value="' + d[i].value + '" title="' + d[i].title + '" lay-skin="primary" lay-filter="xtreeck' + _this._containerid + '">';
-            _this.dataBind(d[i].data);
+            _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend + xtree_ischecked + xtree_isdisabled + ' value="' + d[i].menuId + '" title="' + d[i].content + '" lay-skin="primary" lay-filter="xtreeck' + _this._containerid + '">';
+            _this.dataBind(d[i].children);
             _this._domStr += '</div>';
         }
     }
@@ -294,6 +294,20 @@ layuiXtree.prototype.GetChecked = function () {
     var cks = _this.getByClassName('layui-xtree-checkbox');
     for (var i = 0; i < cks.length; i++) {
         if (cks[i].checked && cks[i].getAttribute('data-xend') == '1') {
+            arr[arrIndex] = cks[i]; arrIndex++;
+        }
+    }
+    return arr;
+}
+
+//获取全部选中的checkbox对象
+layuiXtree.prototype.GetAllChecked = function () {
+    var _this = this;
+    var arr = new Array();
+    var arrIndex = 0;
+    var cks = _this.getByClassName('layui-xtree-checkbox');
+    for (var i = 0; i < cks.length; i++) {
+        if (cks[i].checked) {
             arr[arrIndex] = cks[i]; arrIndex++;
         }
     }
