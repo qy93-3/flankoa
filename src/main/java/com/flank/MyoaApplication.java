@@ -10,5 +10,4 @@ public class MyoaApplication {
     public static void main(String[] args){
         SpringApplication.run(MyoaApplication.class, args);
     }
-
 }

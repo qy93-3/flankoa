@@ -1,9 +1,7 @@
 package com.flank.controller;
 
-import com.flank.beans.Menu;
-import com.flank.beans.Role;
-import com.flank.beans.RoleMenu;
-import com.flank.beans.UserRole;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.flank.beans.*;
 import com.flank.result.Result;
 import com.flank.service.MenuService;
 import com.flank.service.RoleMenuService;
@@ -37,8 +35,9 @@ public class RoleMenuController {
     @RequestMapping("/menuInfo")
     public  Object  menuInfo(HttpSession session) {
         /*int userId = Integer.parseInt(session.getId());*/
+        User user = (User) session.getAttribute("user");
         //根据登录用户的id获取所对应角色的id
-        UserRole userRole = userRoleService.selectById(1);
+        UserRole userRole = userRoleService.selectById(user.getUserId());
         int roleId = userRole.getRoleId();
         //通过角色id获取对应菜单的ids
         List<RoleMenu> roleMenus = roleMenuService.selectList(null);
@@ -91,18 +90,14 @@ public class RoleMenuController {
     @PostMapping("/grant")
     @ResponseBody
     public Result grant(@Param("roleId") String roleId,@Param("menuIds")Integer[] menuIds) {
-       /* RoleMenu roleMenu=new RoleMenu();
-        roleMenuService.deleteById(Integer.parseInt(roleId));
+        RoleMenu roleMenu=new RoleMenu();
+        int id=Integer.parseInt(roleId);
+            roleMenuService.delete(new EntityWrapper<RoleMenu>().eq("role_id", id));
         for (Integer menuId:menuIds) {
             roleMenu.setRoleId(Integer.parseInt(roleId));
             roleMenu.setMenuId(menuId);
             System.out.println(roleMenu.toString());
-           *//* roleMenuService.insert(roleMenu);*//*
-        }*/
-        System.out.println(roleId);
-        for (Integer menuId:menuIds
-             ) {
-            System.out.println(menuId);
+             roleMenuService.insert(roleMenu);
         }
         return new Result<Role>().setCode(200).setMsg("授权成功");
     }
